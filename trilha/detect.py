@@ -40,6 +40,7 @@ class Listening:
     week: int
     detections: list[Detection] = field(default_factory=list)
     candidate_species: int = 0
+    ranged: bool = True
     elapsed_s: float = 0.0
 
     def by_species(self) -> list[tuple[Detection, int]]:
@@ -145,12 +146,13 @@ class Listener:
         min_confidence: float = 0.25,
         top_k: int = 3,
         workers: int = 4,
+        use_range: bool = True,
     ) -> Listening:
         import time
 
         week = week_of(when or date.today())
-        allowed = self.plausible_species(latitude, longitude, week)
-        if not allowed:
+        allowed = self.plausible_species(latitude, longitude, week) if use_range else []
+        if use_range and not allowed:
             raise RuntimeError(
                 "The range model expects no species at this coordinate. "
                 "Check --lat/--lon, or pass --no-range to listen worldwide."
@@ -160,7 +162,7 @@ class Listener:
         result = self.acoustic.predict(
             audio_path,
             top_k=top_k,
-            custom_species_list=allowed,
+            custom_species_list=allowed or None,
             default_confidence_threshold=min_confidence,
             n_workers=workers,
             batch_size=8,
@@ -186,6 +188,7 @@ class Listener:
             longitude=longitude,
             week=week,
             detections=detections,
-            candidate_species=len(allowed),
+            candidate_species=len(allowed) if allowed else self.acoustic.n_species,
+            ranged=bool(allowed),
             elapsed_s=elapsed,
         )

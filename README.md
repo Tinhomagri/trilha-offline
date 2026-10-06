@@ -50,6 +50,11 @@ plausibly be there. At `-23.55, -46.63` in week 40 that is 596 species instead
 of 11,560, which is the difference between a useful answer and a list of
 everything that has ever had feathers.
 
+The filter has a cost, and it's worth knowing about: a narrow-range endemic can
+be excluded from the candidate list even though the acoustic model knows its
+call. Pass `--no-range` when you suspect that's happening — you get all 11,560
+species back, and the noise that comes with them.
+
 **The voice** — [Gemma 3](https://ai.google.dev/gemma) through
 [Ollama](https://ollama.com), on your machine, turning the detection list into a
 few sentences of prose for the journal. It is told never to name a species that
@@ -110,6 +115,7 @@ trilha listen dawn.wav dusk.wav --lat -23.55 --lon -46.63
 | `--lang` | `en_us` | common-name language (`pt`, `es`, `fr`, `de`, …) |
 | `--workers` | `4` | inference threads |
 | `--model` | `gemma3:4b` | Ollama model for the field note |
+| `--no-range` | | skip the range filter, listen for all 11,560 species |
 | `--no-note` | | skip the field note |
 | `--no-journal` | | don't record the outing |
 

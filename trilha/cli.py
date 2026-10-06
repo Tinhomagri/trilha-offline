@@ -45,6 +45,11 @@ def _build_parser() -> argparse.ArgumentParser:
     listen.add_argument("--lang", default="en_us", help="common-name language (default: en_us)")
     listen.add_argument("--workers", type=int, default=4, help="inference threads (default: 4)")
     listen.add_argument("--model", default=None, help="Ollama model for the field note")
+    listen.add_argument(
+        "--no-range",
+        action="store_true",
+        help="skip the range filter and listen for every species the model knows",
+    )
     listen.add_argument("--no-note", action="store_true", help="skip the local field note")
     listen.add_argument("--no-journal", action="store_true", help="don't write to the journal")
 
@@ -68,7 +73,8 @@ def _print_listening(result, note: str | None) -> None:
     print()
     print(f"  {result.audio_path.name}")
     print(
-        f"  {result.candidate_species} species in range · "
+        f"  {result.candidate_species} species "
+        f"{'in range' if result.ranged else 'worldwide'} · "
         f"{result.elapsed_s:.1f}s on CPU · week {result.week}"
     )
     print()
@@ -107,6 +113,7 @@ def _cmd_listen(args: argparse.Namespace) -> int:
                 min_confidence=args.min_conf,
                 top_k=args.top_k,
                 workers=args.workers,
+                use_range=not args.no_range,
             )
         except RuntimeError as exc:
             print(f"trilha: {path.name}: {exc}", file=sys.stderr)
