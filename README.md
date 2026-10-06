@@ -62,7 +62,7 @@ Ollama isn't running, the note is skipped and the identifications still stand â€
 Needs Python 3.11+.
 
 ```bash
-git clone https://github.com/<you>/trilha-offline
+git clone https://github.com/Tinhomagri/trilha-offline
 cd trilha-offline
 python3 -m venv .venv
 .venv/bin/pip install -e .
