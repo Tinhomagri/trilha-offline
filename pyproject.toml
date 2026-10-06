@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trilha-offline"
+version = "0.1.0"
+description = "Identify birds by ear on the trail, with no signal. Open weights, local inference."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = ["birdnet>=1.1.1"]
+
+[project.scripts]
+trilha = "trilha.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["trilha*"]
